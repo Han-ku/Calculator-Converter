@@ -78,12 +78,14 @@ html {
 }
 
 .screen {
-  height: 20%; 
-  margin-bottom: 1rem; 
-  overflow: hidden;
   display: flex;
-  align-items: center; 
-  justify-content: end; 
+  justify-content: end;
+  align-items: center;
+  height: 100px; 
+  font-size: calc(1rem + 5vw);
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .buttonBox {
