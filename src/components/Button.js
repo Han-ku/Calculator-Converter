@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { CalcContext } from '../context/CalcContext.js'
+import { evaluate } from 'mathjs';
 
 const getStyleName = btn => {
     const className = {
@@ -201,20 +202,20 @@ const Button = ({ value }) => {
 
     const calculateExpression = (expression) => {
         expression = expression.trim();
-
+    
         expression = expression.replace(/([0-9]+(?:\.[0-9]+)?)%/g, (match, number) => {
             return `(${number} / 100)`
         })
-
+    
         const validCharacters = /^[0-9+\-*/.%() ]+$/;
         if (!validCharacters.test(expression)) {
             throw new Error("Invalid characters in expression");
         }
-
+    
         try {
-            const result = eval(expression)
+            const result = evaluate(expression);
             return result
-        } catch(e) {
+        } catch (e) {
             console.error("Error evaluating expression:", e.message)
             return "Error"
         }
