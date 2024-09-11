@@ -99,7 +99,7 @@ html {
 
 .button {
   background: #e9f0f4;
-  height: 100%;
+  height: auto;
   width: 100%;
   border-radius: 10px;
   display: flex;
@@ -113,6 +113,27 @@ html {
 
 .button:active {
   scale: 0.9;
+}
+
+.unvisible,
+.history {
+  visibility: hidden;
+  pointer-events: none;
+  cursor: auto;
+}
+
+.unvisible,
+.history,
+.removeLastCalc {   
+  height: 100%;
+  width: 60%;    
+  background: transparent;
+  opacity: 0.7;
+  align-self: flex-end;
+}
+
+.removeLastCalc {
+  justify-self: end;
 }
 
 .equals {
@@ -240,6 +261,10 @@ h1 {
 }
 
 @media (max-width: 340px) {
+  .screen {
+    height: 15%;
+  }
+
   #nav-options {
     flex-direction: column;
     gap: 0;

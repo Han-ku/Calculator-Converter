@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import CalcProvider from '../context/CalcContext';
 
 const btnValues = [
+    ["H", "$", "$", "<-"],
     ["C", "+-", "%", "/"],
     ["7", "8", "9", "*"],
     ["4", "5", "6", "-"],
@@ -19,12 +20,12 @@ const Calculator = () => {
             <Wrapper>
                 <Screen/>
                 <ButtonBox>
-                    {btnValues.flat().map((btn, i) => 
+                    {btnValues.slice(0).flat().map((btn, i) => (
                         <Button
-                            value ={btn}
+                            value={btn}
                             key={i}
                         />
-                    )}
+                    ))}
                 </ButtonBox>
             </Wrapper>
         </CalcProvider>

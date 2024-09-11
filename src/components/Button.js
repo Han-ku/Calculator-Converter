@@ -1,9 +1,12 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { CalcContext } from '../context/CalcContext.js'
-import { evaluate } from 'mathjs';
+import { evaluate, im } from 'mathjs';
 
 const getStyleName = btn => {
     const className = {
+        '$' : 'unvisible',
+        'H' : 'history',
+        '<-' : 'removeLastCalc',
         '=' : 'equals',
         '*' : 'opt',
         '-' : 'opt',
@@ -21,9 +24,14 @@ const Button = ({ value }) => {
 
     const { calc, setCalc } = useContext(CalcContext)
 
+    const [history, setHistory] = useState([])
+    const [expressionResultToSave, setExpressionResultToSave] = useState(null)
+
     const handleBtnClick = () => {
 
         const actions = {
+            'H': toggleHistory,
+            '<-': removeLastSign,
             '.': commaClick,
             'C': resetClick,
             '/': signClick,
@@ -40,6 +48,26 @@ const Button = ({ value }) => {
         } else {
             return handleClickButton()
         }
+    }
+
+    const toggleHistory = () => {
+        console.log(history)
+    }
+
+    const removeLastSign = () => {
+        setCalc(() => {
+            const {expression} = calc
+
+            if(expression) {
+                const newExpression = expression.slice(0, -1)
+                return {
+                    ...calc,
+                    expression: newExpression
+                }
+            }
+
+            return calc
+        })
     }
 
     const commaClick = () => {
@@ -173,16 +201,20 @@ const Button = ({ value }) => {
             // Проверка: если последний символ — точка и нет знаков операций, игнорируем нажатие на равно
             if ((prevCalc.isAfterResult && prevCalc.num === prevCalc.res && prevCalc.sign === "" && lastChar !== '%') 
                 || (!prevCalc.sign && lastChar !== '%')
-                || (lastChar === '.'  && !/[+\-*/]/.test(prevCalc.expression))) {
+                || (lastChar === '.'  && !/[+\-*/]/.test(prevCalc.expression))
+                || /[+\-*/]/.test(lastChar)) {
                     return prevCalc  
             }
-
 
             console.log(prevCalc.expression)
             
             if (prevCalc.res && prevCalc.num) {
+             
+
                 const result = calculateExpression(prevCalc.expression)
-            
+
+                setExpressionResultToSave([prevCalc.expression, result])
+
                 console.log(result)
 
                 return {
@@ -199,6 +231,20 @@ const Button = ({ value }) => {
             return prevCalc
         })
     }
+
+    useEffect(() => {
+        if (expressionResultToSave) {
+            setHistory((prevHistory) => {
+                const [expression, result] = expressionResultToSave
+                if (prevHistory.length === 0 || prevHistory[prevHistory.length - 1][0] !== expression) {
+                    return [...prevHistory, expressionResultToSave]
+                }
+                return prevHistory
+            });
+
+            setExpressionResultToSave(null)
+        }
+    }, [expressionResultToSave])
 
     const calculateExpression = (expression) => {
         expression = expression.trim();
